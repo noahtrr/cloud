@@ -26,6 +26,12 @@ variable "tld_zen_zone" {
 variable "tld_lab_zone" {
   sensitive = true
 }
+variable "labs_dkim" {
+  sensitive = true
+}
+variable "labs_apple_domain" {
+  sensitive = true
+}
 
 # Defining Data for the Server deployments
 data hcloud_ssh_key "by_fingerprint" {
@@ -108,6 +114,43 @@ resource "hcloud_zone_rrset" "ansible" {
 
   records = [
     { value = hcloud_server.ansible.ipv4_address, comment = "Ansible Server" },
+  ]
+
+  change_protection = false
+}
+
+# Defining DNS Records for Apple Mail on lab zone
+resource "hcloud_zone_rrset" "labs_mx" {
+  zone = hcloud_zone.lab_zone.name
+  name = "@"
+  type = "MX"
+
+  records = [
+    { value = "10 mx01.mail.icloud.com.", comment = "Apple Mail" },
+    { value = "10 mx02.mail.icloud.com.", comment = "Apple Mail" },
+  ]
+
+  change_protection = false
+}
+resource "hcloud_zone_rrset" "labs_dkim" {
+  zone = hcloud_zone.lab_zone.name
+  name = "sig1._domainkey"
+  type = "CNAME"
+
+  records = [
+    { value = var.labs_dkim, comment = "Apple Mail" },
+  ]
+
+  change_protection = false
+}
+resource "hcloud_zone_rrset" "labs_txt" {
+  zone = hcloud_zone.lab_zone.name
+  name = "@"
+  type = "TXT"
+
+  records = [
+    { value = provider::hcloud::txt_record("v=spf1 include:icloud.com ~all"), comment = "Apple Mail" },
+    { value = provider::hcloud::txt_record(var.labs_apple_domain), comment = "Apple Mail" },
   ]
 
   change_protection = false
