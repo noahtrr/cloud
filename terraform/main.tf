@@ -60,7 +60,7 @@ resource "hcloud_firewall" "ansible_firewall" {
     direction = "out"
     protocol  = "tcp"
     port      = "any"
-    source_ips = [
+    destination_ips = [
       "0.0.0.0/0",
       "::/0"
     ]
@@ -69,7 +69,7 @@ resource "hcloud_firewall" "ansible_firewall" {
     direction = "out"
     protocol  = "udp"
     port      = "any"
-    source_ips = [
+    destination_ips = [
       "0.0.0.0/0",
       "::/0"
     ]
