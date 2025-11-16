@@ -20,16 +20,31 @@ variable "hcloud_token" {
 variable "ssh_token" {
   sensitive = true
 }
+variable "tld_labs_zone" {
+  sensitive = true
+}
 variable "tld_zen_zone" {
   sensitive = true
 }
-variable "tld_lab_zone" {
+variable "tld_av_zone" {
   sensitive = true
 }
 variable "labs_dkim" {
   sensitive = true
 }
+variable "zen_dkim" {
+  sensitive = true
+}
+variable "av_dkim" {
+  sensitive = true
+}
 variable "labs_apple_domain" {
+  sensitive = true
+}
+variable "zen_apple_domain" {
+  sensitive = true
+}
+variable "av_apple_domain" {
   sensitive = true
 }
 
@@ -40,7 +55,7 @@ data hcloud_ssh_key "by_fingerprint" {
 
 # Defining the DNS Zone - use if you want to create the zone via terraform
 resource "hcloud_zone" "lab_zone" {
-  name = var.tld_lab_zone
+  name = var.tld_labs_zone
   mode = "primary"
 }
 
