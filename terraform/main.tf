@@ -20,7 +20,10 @@ variable "hcloud_token" {
 variable "ssh_token" {
   sensitive = true
 }
-variable "tld_zone" {
+variable "tld_zen_zone" {
+  sensitive = true
+}
+variable "tld_lab_zone" {
   sensitive = true
 }
 
@@ -30,10 +33,10 @@ data hcloud_ssh_key "by_fingerprint" {
 }
 
 # Defining the DNS Zone - use if you want to create the zone via terraform
-#resource "hcloud_zone" "primary_zone" {
-#  name = var.tld_zone
-#  mode = "primary"
-#}
+resource "hcloud_zone" "lab_zone" {
+  name = var.tld_lab_zone
+  mode = "primary"
+}
 
 # Defining the firewall to be created
 resource "hcloud_firewall" "ansible_firewall" {
@@ -97,7 +100,7 @@ resource "hcloud_server" "ansible" {
 
 # Defining DNS Records
 resource "hcloud_zone_rrset" "ansible" {
-  zone = var.tld_zone #hcloud_zone.primary_zone.name - use if you want to create the zone via terraform
+  zone = var.tld_zen_zone #hcloud_zone.primary_zone.name - use if you want to create the zone via terraform
   name = "ansible"
   type = "A"
 
