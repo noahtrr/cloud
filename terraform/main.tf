@@ -24,12 +24,15 @@ provider "hcloud" {
   token = var.hcloud_token
 }
 
+data hcloud_ssh_key "by_fingerprint" {
+  fingerprint = var.ssh_token
+}
+
 resource "hcloud_server" "portainer" {
   count       = 1
   name        = "portainer"
   server_type = "cax21"
   image       = "ubuntu-24.04"
-  location    = "nbg1-dc3"
-
-  ssh_keys = [var.ssh_token]
+  location    = "nbg1"
+  ssh_keys    = [data.hcloud_ssh_key.by_fingerprint.id] 
 }
