@@ -1,3 +1,6 @@
 terraform/*.tfvars
 terraform/*.tfstate
 terraform/*.tfstate.backup
+terraform/modules/DNS/terraform.tfstate
+terraform/modules/DNS/terraform.tfstate.backup
+terraform/modules/DNS/terraform.tfvars

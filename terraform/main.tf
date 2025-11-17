@@ -18,20 +18,6 @@ data hcloud_ssh_key "by_fingerprint" {
   fingerprint = var.ssh_token
 }
 
-# Defining the DNS Zone - use if you want to create the zone via terraform
-resource "hcloud_zone" "lab_zone" {
-  name = var.tld_labs_zone
-  mode = "primary"
-}
-resource "hcloud_zone" "zen_zone" {
-  name = var.tld_zen_zone
-  mode = "primary"
-}
-resource "hcloud_zone" "av_zone" {
-  name = var.tld_av_zone
-  mode = "primary"
-}
-
 # Defining the firewall to be created
 resource "hcloud_firewall" "ansible_firewall" {
   name = "ansibleFW"
@@ -82,16 +68,6 @@ resource "hcloud_firewall" "ansible_firewall" {
   }
 }
 
-# Defining the servers to be created
-resource "hcloud_server" "ansible" {
-  name        = "ansible"
-  server_type = "cx23"
-  image       = "ubuntu-24.04"
-  location    = "nbg1"
-  ssh_keys    = [data.hcloud_ssh_key.by_fingerprint.id]
-  firewall_ids = [hcloud_firewall.ansible_firewall.id]
-}
-
 # Defining DNS Records
 resource "hcloud_zone_rrset" "ansible" {
   zone = var.tld_zen_zone #hcloud_zone.primary_zone.name - use if you want to create the zone via terraform
@@ -107,113 +83,12 @@ resource "hcloud_zone_rrset" "ansible" {
   change_protection = false
 }
 
-# Defining DNS Records for Apple Mail on lab zone
-resource "hcloud_zone_rrset" "labs_mx" {
-  zone = hcloud_zone.lab_zone.name
-  name = "@"
-  type = "MX"
-
-  records = [
-    { value = "10 mx01.mail.icloud.com.", comment = "Apple Mail" },
-    { value = "10 mx02.mail.icloud.com.", comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-resource "hcloud_zone_rrset" "labs_dkim" {
-  zone = hcloud_zone.lab_zone.name
-  name = "sig1._domainkey"
-  type = "CNAME"
-
-  records = [
-    { value = var.labs_dkim, comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-resource "hcloud_zone_rrset" "labs_txt" {
-  zone = hcloud_zone.lab_zone.name
-  name = "@"
-  type = "TXT"
-
-  records = [
-    { value = provider::hcloud::txt_record("v=spf1 include:icloud.com ~all"), comment = "Apple Mail" },
-    { value = provider::hcloud::txt_record(var.labs_apple_domain), comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-
-# Defining DNS Records for Apple Mail on zen zone
-resource "hcloud_zone_rrset" "zen_mx" {
-  zone = hcloud_zone.zen_zone.name
-  name = "@"
-  type = "MX"
-
-  records = [
-    { value = "10 mx01.mail.icloud.com.", comment = "Apple Mail" },
-    { value = "10 mx02.mail.icloud.com.", comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-resource "hcloud_zone_rrset" "zen_dkim" {
-  zone = hcloud_zone.zen_zone.name
-  name = "sig1._domainkey"
-  type = "CNAME"
-
-  records = [
-    { value = var.zen_dkim, comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-resource "hcloud_zone_rrset" "zen_txt" {
-  zone = hcloud_zone.zen_zone.name
-  name = "@"
-  type = "TXT"
-
-  records = [
-    { value = provider::hcloud::txt_record("v=spf1 include:icloud.com ~all"), comment = "Apple Mail" },
-    { value = provider::hcloud::txt_record(var.zen_apple_domain), comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-
-# Defining DNS Records for Apple Mail on av zone
-resource "hcloud_zone_rrset" "av_mx" {
-  zone = hcloud_zone.av_zone.name
-  name = "@"
-  type = "MX"
-
-  records = [
-    { value = "10 mx01.mail.icloud.com.", comment = "Apple Mail" },
-    { value = "10 mx02.mail.icloud.com.", comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-resource "hcloud_zone_rrset" "av_dkim" {
-  zone = hcloud_zone.av_zone.name
-  name = "sig1._domainkey"
-  type = "CNAME"
-
-  records = [
-    { value = var.av_dkim, comment = "Apple Mail" },
-  ]
-
-  change_protection = false
-}
-resource "hcloud_zone_rrset" "av_txt" {
-  zone = hcloud_zone.av_zone.name
-  name = "@"
-  type = "TXT"
-
-  records = [
-    { value = provider::hcloud::txt_record("v=spf1 include:icloud.com ~all"), comment = "Apple Mail" },
-    { value = provider::hcloud::txt_record(var.av_apple_domain), comment = "Apple Mail" },
-  ]
-
-  change_protection = false
+# Defining the servers to be created
+resource "hcloud_server" "ansible" {
+  name        = "ansible"
+  server_type = "cx23"
+  image       = "ubuntu-24.04"
+  location    = "nbg1"
+  ssh_keys    = [data.hcloud_ssh_key.by_fingerprint.id]
+  firewall_ids = [hcloud_firewall.ansible_firewall.id]
 }
