@@ -4,3 +4,6 @@ terraform/*.tfstate.backup
 terraform/modules/DNS/terraform.tfstate
 terraform/modules/DNS/terraform.tfstate.backup
 terraform/modules/DNS/terraform.tfvars
+terraform/modules/Firewall/terraform.tfstate
+terraform/modules/Firewall/terraform.tfstate.backup
+terraform/modules/Firewall/terraform.tfvars
