@@ -61,6 +61,17 @@ resource "hcloud_zone_rrset" "labs_skrime_pocketid" {
 
   change_protection = false
 }
+resource "hcloud_zone_rrset" "labs_skrime_otel" {
+  zone = hcloud_zone.lab_zone.name
+  name = "otel"
+  type = "A"
+
+  records = [
+    { value = "77.90.15.177", comment = "SKRIME Server" },
+  ]
+
+  change_protection = false
+}
 
 # Defining DNS Records for Apple Mail on lab zone
 resource "hcloud_zone_rrset" "labs_mx" {
