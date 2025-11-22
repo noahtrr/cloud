@@ -27,6 +27,41 @@ resource "hcloud_zone" "av_zone" {
   mode = "primary"
 }
 
+# Define DNS Records for SKRIME Server
+resource "hcloud_zone_rrset" "labs_skrime_dash" {
+  zone = hcloud_zone.lab_zone.name
+  name = "dash"
+  type = "A"
+
+  records = [
+    { value = "77.90.15.177", comment = "SKRIME Server" },
+  ]
+
+  change_protection = false
+}
+resource "hcloud_zone_rrset" "labs_skrime_traefik" {
+  zone = hcloud_zone.lab_zone.name
+  name = "traefik"
+  type = "A"
+
+  records = [
+    { value = "77.90.15.177", comment = "SKRIME Server" },
+  ]
+
+  change_protection = false
+}
+resource "hcloud_zone_rrset" "labs_skrime_pocketid" {
+  zone = hcloud_zone.lab_zone.name
+  name = "id"
+  type = "A"
+
+  records = [
+    { value = "77.90.15.177", comment = "SKRIME Server" },
+  ]
+
+  change_protection = false
+}
+
 # Defining DNS Records for Apple Mail on lab zone
 resource "hcloud_zone_rrset" "labs_mx" {
   zone = hcloud_zone.lab_zone.name
